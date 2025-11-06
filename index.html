@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lost Signal</title>
+<style>
+  body { font-family: Arial; background:#050505; color:#0f0; margin:0; padding:0; }
+  header { background:#111; padding:20px; text-align:center; border-bottom:2px solid #0f0; }
+  nav a { margin:0 15px; color:#0f0; text-decoration:none; font-weight:bold; }
+  nav a:hover { color:#0c0; }
+  section { max-width:800px; margin:20px auto; padding:20px; background:rgba(20,20,20,0.85); border:1px solid #0f0; border-radius:10px; box-shadow:0 0 15px #0f0; }
+  h1,h2 { color:#0f0; text-shadow:0 0 5px #0f0,0 0 10px #0f0; }
+  ul { list-style-type:square; padding-left:20px; }
+  button { background:#0f0; color:#111; border:2px solid #0f0; padding:10px 20px; font-size:16px; cursor:pointer; transition:0.3s; margin-top:10px; }
+  button:hover { background:#0c0; border-color:#0c0; }
+  footer { background:#111; color:#0f0; text-align:center; padding:10px; position:fixed; bottom:0; width:100%; border-top:2px solid #0f0; box-shadow:0 -2px 10px #0f0; }
+
+  /* Estilos del juego */
+  #gameContainer { display:none; margin-top:20px; text-align:center; }
+  #game { position:relative; width:800px; height:500px; margin:0 auto; border:2px solid #0f0; background:#050505; }
+  #player, #emma { position:absolute; width:40px; height:40px; border-radius:5px; }
+  #player { background:#0f0; top:230px; left:380px; }
+  #emma { background:#ff0; top:100px; left:700px; }
+  #messages { max-width:800px; margin:10px auto; height:100px; overflow-y:auto; border:1px solid #0f0; padding:5px; background:#111; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Lost Signal</h1>
+  <nav>
+    <a href="#inicio">Inicio</a>
+    <a href="#historia">Historia</a>
+    <a href="#criaturas">Criaturas</a>
+    <a href="#proximamente">Próximamente</a>
+  </nav>
+</header>
+
+<section id="inicio">
+  <h2>Bienvenido</h2>
+  <p>Sumérgete en el bosque misterioso junto a Ethan Morales y su hija Emma. Sobrevive a la noche y descubre los secretos que acechan en la oscuridad.</p>
+  <button onclick="startGame()">Jugar Demo</button>
+</section>
+
+<section id="historia">
+  <h2>Historia</h2>
+  <p>Ethan Morales, técnico en telecomunicaciones, viaja con su hija de 12 años, Emma, hacia una zona montañosa del norte para reparar una torre de radio que dejó de emitir señal. Durante el trayecto, una tormenta eléctrica cambia todo.</p>
+  <p>El helicóptero en el que viajaban sufre un fallo y se estrella en un bosque denso y silencioso. Ethan despierta, el piloto ha desaparecido y el transmisor está destruido. No hay señal y la noche se acerca.</p>
+  <p>Emma permanece a su lado: asustada pero decidida a ayudar. Padre e hija deben sobrevivir juntos, buscar recursos, encender fogatas y encontrar una forma de reparar la radio.</p>
+  <p>Con el paso de los días, el bosque se comporta de forma extraña: las brújulas fallan, los relojes se detienen y se oyen voces entre los árboles, algunas idénticas a la de Emma. En un momento, Emma desaparece y la misión de Ethan será encontrarla. El bosque desafiará cada paso que den.</p>
+</section>
+
+<section id="criaturas">
+  <h2>Criaturas del bosque</h2>
+  <ul>
+    <li><strong>Los Susurrantes:</strong> sombras delgadas que imitan voces humanas para atraer a los exploradores.</li>
+    <li><strong>El Errante:</strong> figura gigante de ramas y huesos que solo se mueve cuando no la miras.</li>
+    <li><strong>Los Caídos:</strong> restos de antiguos exploradores absorbidos por el bosque, apareciendo como almas luminosas.</li>
+  </ul>
+</section>
+
+<section id="proximamente">
+  <h2>Próximamente</h2>
+  <p>Nuevas aventuras, criaturas y desafíos se agregarán en la próxima versión del juego.</p>
+</section>
+
+<!-- Contenedor del juego -->
+<div id="gameContainer">
+  <h2>Demo del Juego</h2>
+  <div id="game">
+    <div id="player"></div>
+    <div id="emma"></div>
+  </div>
+  <div id="messages">Usa las flechas o WASD para mover a Ethan.</div>
+</div>
+
+<footer>
+  <p>Creado por Anghelo A.G — 2025</p>
+</footer>
+
+<script>
+const gameContainer = document.getElementById('gameContainer');
+const player = document.getElementById('player');
+const emma = document.getElementById('emma');
+const messages = document.getElementById('messages');
+
+let playerPos = { x:380, y:230 };
+let emmaFound = false;
+
+function startGame(){
+  gameContainer.style.display = "block";
+  document.getElementById('inicio').scrollIntoView({behavior: 'smooth'});
+}
+
+function movePlayer(dx, dy){
+  playerPos.x += dx; playerPos.y += dy;
+  playerPos.x = Math.max(0, Math.min(760, playerPos.x));
+  playerPos.y = Math.max(0, Math.min(460, playerPos.y));
+  player.style.left = playerPos.x+'px';
+  player.style.top = playerPos.y+'px';
+  checkEmma();
+  randomEvent();
+}
+
+function checkEmma(){
+  const px = playerPos.x, py = playerPos.y;
+  const ex = parseInt(emma.style.left), ey = parseInt(emma.style.top);
+  if(!emmaFound && Math.abs(px-ex)<40 && Math.abs(py-ey)<40){
+    messages.innerHTML += "<br>¡Encontraste a Emma! ✅";
+    emma.style.backgroundColor='#0f0';
+    emmaFound = true;
+  }
+}
+
+function randomEvent(){
+  if(Math.random()<0.02){
+    const events = [
+      "Escuchas susurros cerca...",
+      "Una sombra se mueve entre los árboles...",
+      "Algo te observa silenciosamente...",
+      "El viento suena como la voz de Emma..."
+    ];
+    const msg = events[Math.floor(Math.random()*events.length)];
+    messages.innerHTML += "<br>"+msg;
+    messages.scrollTop = messages.scrollHeight;
+  }
+}
+
+document.addEventListener('keydown', e=>{
+  switch(e.key){
+    case "ArrowUp": case "w": movePlayer(0,-10); break;
+    case "ArrowDown": case "s": movePlayer(0,10); break;
+    case "ArrowLeft": case "a": movePlayer(-10,0); break;
+    case "ArrowRight": case "d": movePlayer(10,0); break;
+  }
+});
+</script>
+
+</body>
+</html>
